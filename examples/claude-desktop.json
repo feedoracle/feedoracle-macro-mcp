@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "feedoracle-macro": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://feedoracle.io/mcp/macro/sse"]
+    }
+  }
+}

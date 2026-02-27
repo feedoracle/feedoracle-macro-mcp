@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "tool": "defi_rates",
+  "request_id": "a1b2c3d4e5f6",
+  "timestamp": "2026-02-27T19:30:00Z",
+  "data": {
+    "confidence": 0.95,
+    "feed": "DEFI_MACRO_BUNDLE",
+    "lending_rates": {
+      "sofr": 3.67,
+      "sofr_30d_avg": 3.67,
+      "sofr_90d_avg": 3.73,
+      "effr": 3.64,
+      "fed_funds_rate": 3.64
+    },
+    "yield_curve": {
+      "spread_2s10s": 0.6,
+      "recession_signal": false,
+      "curve_status": "NORMAL",
+      "treasury_10y": 4.05,
+      "treasury_2y": 3.45
+    },
+    "volatility_stress": {
+      "vix": 18.63,
+      "credit_spread_high_yield": 2.98,
+      "credit_spread_investment_grade": 1.03,
+      "financial_stress_index": -0.85
+    },
+    "crypto_reference": {
+      "btc_usd": 67068.86,
+      "eth_usd": 2008.77
+    },
+    "safe_haven": {
+      "gold_usd": 3250.20,
+      "usd_index": 117.99
+    }
+  },
+  "signature": {
+    "alg": "HMAC-SHA256",
+    "kid": "fo-hmac-v1",
+    "scope": "server-attested integrity"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "tool": "macro_regime",
+  "request_id": "f6e5d4c3b2a1",
+  "timestamp": "2026-02-27T19:37:00Z",
+  "data": {
+    "regime": "NEUTRAL",
+    "regime_description": "Mixed signals, no clear directional bias",
+    "risk_score": 30,
+    "confidence": 0.79,
+    "engine_version": "macro-regime/1.0",
+    "signals": {
+      "vix": { "value": 18.63, "status": "NORMAL", "weight": 0 },
+      "yield_curve": { "spread_2s10s": 0.6, "status": "FLAT", "weight": 0 },
+      "recession_probability": { "value": 10, "status": "MODERATE", "weight": 0 },
+      "credit_spread_hy": { "value": 2.98, "status": "TIGHT", "weight": -1 },
+      "financial_stress": { "value": -0.8509, "status": "NORMAL", "weight": 0 },
+      "fed_stance": { "status": "NEUTRAL", "rate": 3.64, "next_meeting": "2026-01-29", "weight": 0 },
+      "consumer_sentiment": { "value": 56.4, "status": "PESSIMISTIC", "weight": 2 }
+    },
+    "agent_hint": "Mixed macro signals with no clear directional bias.",
+    "next_catalyst": { "date": "2026-03-19", "type": "Meeting + SEP" },
+    "market_snapshot": {
+      "btc_usd": 67068.86,
+      "eth_usd": 2008.77,
+      "gold_usd": 3250.20,
+      "usd_index": 117.99,
+      "treasury_10y": 4.05,
+      "treasury_2y": 3.45
+    },
+    "scoring_rules": "https://feedoracle.io/docs.html#macro-regime-rules",
+    "disclaimer": "Deterministic macro classification based on public economic data. Not investment advice."
+  }
+}

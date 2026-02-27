@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "name": "FeedOracle Macro Intelligence",
+  "description": "Real-time macroeconomic signals for AI trading agents. 13 tools powered by 86 FRED economic series. Recession risk, yield curve, Fed rate, SOFR, VIX, credit spreads, BTC/ETH, gold. Deterministic regime classification.",
+  "version": "1.0.0",
+  "author": "FeedOracle",
+  "homepage": "https://feedoracle.io",
+  "icon": "https://feedoracle.io/favicon.png",
+  "transport": "sse",
+  "url": "https://feedoracle.io/mcp/macro/sse",
+  "categories": ["finance", "trading", "economics", "data"],
+  "tags": ["macro", "economics", "FRED", "federal-reserve", "trading", "DeFi", "yields", "inflation", "recession", "SOFR"],
+  "requires_auth": false,
+  "free_tier": true,
+  "tool_count": 13
+}
