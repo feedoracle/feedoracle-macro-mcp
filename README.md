@@ -10,8 +10,6 @@ Before your agent allocates capital, adjusts leverage, or rebalances a portfolio
 npx -y mcp-remote https://feedoracle.io/mcp/macro/sse
 ```
 
-### Claude Desktop
-
 ```json
 {
   "mcpServers": {
@@ -22,6 +20,8 @@ npx -y mcp-remote https://feedoracle.io/mcp/macro/sse
   }
 }
 ```
+
+---
 
 ## 13 Tools
 
@@ -55,7 +55,7 @@ npx -y mcp-remote https://feedoracle.io/mcp/macro/sse
 
 | Tool | What it does |
 |------|-------------|
-| `macro_regime` | **Deterministic regime classification:** RISK_ON / NEUTRAL / RISK_OFF / STRESS. Risk score 0–100, 7 weighted signals, confidence, agent hint. Engine: `macro-regime/1.0` |
+| `macro_regime` | Deterministic regime: RISK_ON / NEUTRAL / RISK_OFF / STRESS. Score 0–100, 7 weighted signals, confidence, agent hint |
 
 ### Meta
 
@@ -63,42 +63,9 @@ npx -y mcp-remote https://feedoracle.io/mcp/macro/sse
 |------|-------------|
 | `ping` | Health, version, uptime |
 
-## Example: `defi_rates`
-
-Everything a DeFi agent needs in one call:
-
-```json
-{
-  "lending_rates": {
-    "sofr": 3.67,
-    "sofr_30d_avg": 3.67,
-    "sofr_90d_avg": 3.73,
-    "effr": 3.64
-  },
-  "yield_curve": {
-    "spread_2s10s": 0.6,
-    "recession_signal": false,
-    "treasury_10y": 4.05
-  },
-  "volatility_stress": {
-    "vix": 18.63,
-    "credit_spread_high_yield": 2.98,
-    "financial_stress_index": -0.85
-  },
-  "crypto_reference": {
-    "btc_usd": 67068.86,
-    "eth_usd": 2008.77
-  },
-  "safe_haven": {
-    "gold_usd": 3250.20,
-    "usd_index": 117.99
-  }
-}
-```
+---
 
 ## Example: `macro_regime` (Premium)
-
-Deterministic macro classification — transparent rules, no ML blackbox:
 
 ```json
 {
@@ -107,26 +74,27 @@ Deterministic macro classification — transparent rules, no ML blackbox:
   "confidence": 0.79,
   "engine_version": "macro-regime/1.0",
   "signals": {
-    "vix": { "value": 18.63, "status": "NORMAL", "weight": 0 },
-    "yield_curve": { "spread_2s10s": 0.6, "status": "FLAT", "weight": 0 },
-    "recession_probability": { "value": 10, "status": "MODERATE", "weight": 0 },
-    "credit_spread_hy": { "value": 2.98, "status": "TIGHT", "weight": -1 },
-    "financial_stress": { "value": -0.85, "status": "NORMAL", "weight": 0 },
-    "fed_stance": { "status": "NEUTRAL", "rate": 3.64, "weight": 0 },
-    "consumer_sentiment": { "value": 56.4, "status": "PESSIMISTIC", "weight": 2 }
+    "vix":                   { "value": 18.63, "status": "NORMAL",      "weight": 0 },
+    "yield_curve":           { "spread_2s10s": 0.6, "status": "FLAT",   "weight": 0 },
+    "recession_probability": { "value": 10,    "status": "MODERATE",    "weight": 0 },
+    "credit_spread_hy":      { "value": 2.98,  "status": "TIGHT",       "weight": -1 },
+    "financial_stress":      { "value": -0.85, "status": "NORMAL",      "weight": 0 },
+    "fed_stance":            { "status": "NEUTRAL", "rate": 3.64,       "weight": 0 },
+    "consumer_sentiment":    { "value": 56.4,  "status": "PESSIMISTIC", "weight": 2 }
   },
   "agent_hint": "Mixed macro signals with no clear directional bias.",
-  "next_catalyst": { "date": "2026-03-19", "type": "Meeting + SEP" },
-  "disclaimer": "Deterministic macro classification based on public economic data. Not investment advice."
+  "next_catalyst": { "date": "2026-03-19", "type": "Meeting + SEP" }
 }
 ```
 
-### Regime Engine Scoring Rules
+---
+
+## Regime Engine Scoring Rules
 
 All rules are transparent and documented:
 
-| Signal | < Threshold | Normal | Elevated | Extreme |
-|--------|------------|--------|----------|---------|
+| Signal | RISK_ON | Normal | Elevated | STRESS |
+|--------|---------|--------|----------|--------|
 | VIX | < 15: −2 | 15–25: 0 | 25–35: +3 | > 35: +5 |
 | Yield Spread 2s10s | > 1.0: −2 | 0–1.0: 0 | −0.5–0: +3 | < −0.5: +5 |
 | Recession Probability | < 10%: −2 | 10–25%: 0 | 25–50%: +3 | > 50%: +5 |
@@ -135,25 +103,17 @@ All rules are transparent and documented:
 | Fed Stance | CUT: −1 | HOLD: 0 | — | HIKE: +2 |
 | Consumer Sentiment | > 80: −2 | 60–80: 0 | 40–60: +2 | < 40: +4 |
 
-Raw score → normalized 0–100 → Regime mapping:
-- **0–25:** RISK_ON
-- **26–50:** NEUTRAL
-- **51–75:** RISK_OFF
-- **76–100:** STRESS
+Regime mapping: 0–25 RISK_ON · 26–50 NEUTRAL · 51–75 RISK_OFF · 76–100 STRESS
 
-## Built For
-
-- **Trading agents** needing macro context before execution
-- **DeFi yield agents** comparing SOFR vs on-chain rates
-- **Portfolio rebalancing bots** monitoring recession risk
-- **Risk management systems** tracking financial stress
-- **AI copilots** in quantitative finance
+---
 
 ## Data Sources
 
 86 FRED series from: Federal Reserve · US Treasury · Bureau of Labor Statistics · Bureau of Economic Analysis · Coinbase (BTC/ETH reference)
 
-Coverage: Full Treasury yield curve (1M–30Y) · SOFR/EFFR/OBFR · CPI/PCE/PPI · VIX · Credit Spreads · 10 FX pairs · Gold/Silver/Oil/Copper · Housing · Consumer Sentiment
+Full Treasury yield curve (1M–30Y) · SOFR/EFFR/OBFR · CPI/PCE/PPI · VIX · Credit Spreads · 10 FX pairs · Gold/Silver/Oil/Copper · Housing · Consumer Sentiment
+
+---
 
 ## Pricing
 
@@ -162,20 +122,22 @@ Coverage: Full Treasury yield curve (1M–30Y) · SOFR/EFFR/OBFR · CPI/PCE/PPI 
 | Free | €0 | 100 | ✗ |
 | Developer | €49/mo | 5,000 | ✓ |
 | Professional | €299/mo | 25,000 | ✓ + verified proofs |
-| Enterprise | Custom | Unlimited | ✓ + SLA + custom thresholds |
-
-## Links
-
-- [API Docs](https://feedoracle.io/docs.html#macro-oracle)
-- [Health Endpoint](https://feedoracle.io/mcp/macro/health)
-- [FeedOracle Compliance MCP](https://github.com/feedoracle/feedoracle-mcp) — the regulatory counterpart
-
-## Also by FeedOracle
-
-**[FeedOracle Compliance](https://github.com/feedoracle/feedoracle-mcp)** — MiCA regulatory preflight for AI agents. 18 tools covering 12 MiCA articles. PASS/WARN/BLOCK verdicts with signed evidence packs. *"May your agent trade this?"*
-
-**FeedOracle Macro Intelligence** (this server) — *"Should your agent trade right now?"*
+| Enterprise | Custom | Unlimited | ✓ + SLA |
 
 ---
 
-*FeedOracle — Evidence Infrastructure for Tokenized Markets*
+## The FeedOracle MCP Ecosystem
+
+| Server | URL | Purpose |
+|--------|-----|---------|
+| **Compliance Oracle** | `https://feedoracle.io/mcp/` | MiCA/DORA regulatory data + AI Evidence Layer (22 tools) |
+| **Macro Oracle** (this) | `https://feedoracle.io/mcp/macro/` | Fed/ECB economic indicators, 86 FRED series |
+| **Stablecoin Risk** | `https://feedoracle.io/mcp/risk/` | 7-signal stablecoin operational risk (SAFE/CAUTION/AVOID) |
+
+> "May your agent trade this?" → Compliance Oracle  
+> "Should your agent trade right now?" → Macro Oracle (this server)  
+> "Is this stablecoin safe for settlement?" → Stablecoin Risk
+
+---
+
+🌐 [feedoracle.io](https://feedoracle.io) · [API Docs](https://feedoracle.io/docs.html) · [Health](https://feedoracle.io/mcp/macro/health)
