@@ -1,24 +1,39 @@
-# FeedOracle Macro Intelligence
+# FeedOracle Macro Intelligence MCP
 
-Real-time macroeconomic signals for AI trading agents. 13 MCP tools powered by 86 Federal Reserve (FRED) economic series.
+Real-time macroeconomic signals for AI trading agents. 13 MCP tools powered by 86 Federal Reserve (FRED) economic series — cryptographically signed, on-chain anchored, independently verifiable.
 
-Before your agent allocates capital, adjusts leverage, or rebalances a portfolio — it checks the macro environment.
+Before your agent allocates capital, adjusts leverage, or rebalances — it checks the macro environment.
 
 ## Quick Connect
 
 ```bash
+# Claude Code
+claude mcp add --transport http feedoracle-macro https://feedoracle.io/mcp/macro/sse
+
+# Any MCP client
 npx -y mcp-remote https://feedoracle.io/mcp/macro/sse
 ```
 
-```json
-{
-  "mcpServers": {
-    "feedoracle-macro": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://feedoracle.io/mcp/macro/sse"]
-    }
-  }
-}
+**No API key required** — public access, no registration.
+
+---
+
+## Agent M2M Auth (client_credentials)
+
+Agents can authenticate without a browser:
+
+```bash
+# Register once
+curl -s -X POST https://feedoracle.io/mcp/register \
+  -H "Content-Type: application/json" \
+  -d '{"client_name":"macro-agent","grant_types":["client_credentials"],"redirect_uris":["https://localhost"]}'
+
+# Get token
+curl -s -X POST https://feedoracle.io/mcp/token \
+  -d "grant_type=client_credentials&client_id=fo_client_...&client_secret=fo_secret_...&scope=mcp:read"
+
+# Connect with Bearer token
+curl -N -H "Authorization: Bearer fo_cc_..." https://feedoracle.io/mcp/macro/sse
 ```
 
 ---
@@ -51,11 +66,11 @@ npx -y mcp-remote https://feedoracle.io/mcp/macro/sse
 | `market_stress` | VIX, credit spreads (HY + IG), financial stress index |
 | `safe_haven_flows` | Gold, USD index, BTC/ETH — risk-on vs risk-off |
 
-### Decision Layer (Premium)
+### Decision Layer
 
 | Tool | What it does |
 |------|-------------|
-| `macro_regime` | Deterministic regime: RISK_ON / NEUTRAL / RISK_OFF / STRESS. Score 0–100, 7 weighted signals, confidence, agent hint |
+| `macro_regime` | Deterministic regime: RISK_ON / NEUTRAL / RISK_OFF / STRESS |
 
 ### Meta
 
@@ -65,33 +80,34 @@ npx -y mcp-remote https://feedoracle.io/mcp/macro/sse
 
 ---
 
-## Example: `macro_regime` (Premium)
+## Response Schema — ES256K Signed
+
+Every tool response is independently verifiable:
 
 ```json
 {
+  "tool": "macro_regime",
   "regime": "NEUTRAL",
   "risk_score": 30,
   "confidence": 0.79,
-  "engine_version": "macro-regime/1.0",
-  "signals": {
-    "vix":                   { "value": 18.63, "status": "NORMAL",      "weight": 0 },
-    "yield_curve":           { "spread_2s10s": 0.6, "status": "FLAT",   "weight": 0 },
-    "recession_probability": { "value": 10,    "status": "MODERATE",    "weight": 0 },
-    "credit_spread_hy":      { "value": 2.98,  "status": "TIGHT",       "weight": -1 },
-    "financial_stress":      { "value": -0.85, "status": "NORMAL",      "weight": 0 },
-    "fed_stance":            { "status": "NEUTRAL", "rate": 3.64,       "weight": 0 },
-    "consumer_sentiment":    { "value": 56.4,  "status": "PESSIMISTIC", "weight": 2 }
+  "signature": {
+    "alg": "ES256K",
+    "kid": "feedoracle-mcp-es256k-1",
+    "sig": "..."
   },
-  "agent_hint": "Mixed macro signals with no clear directional bias.",
-  "next_catalyst": { "date": "2026-03-19", "type": "Meeting + SEP" }
+  "verify_url": "https://feedoracle.io/verify"
 }
+```
+
+Verify without trusting FeedOracle:
+```bash
+curl -s https://feedoracle.io/.well-known/jwks.json
+# → public key for independent verification
 ```
 
 ---
 
-## Regime Engine Scoring Rules
-
-All rules are transparent and documented:
+## Macro Regime Scoring
 
 | Signal | RISK_ON | Normal | Elevated | STRESS |
 |--------|---------|--------|----------|--------|
@@ -103,26 +119,28 @@ All rules are transparent and documented:
 | Fed Stance | CUT: −1 | HOLD: 0 | — | HIKE: +2 |
 | Consumer Sentiment | > 80: −2 | 60–80: 0 | 40–60: +2 | < 40: +4 |
 
-Regime mapping: 0–25 RISK_ON · 26–50 NEUTRAL · 51–75 RISK_OFF · 76–100 STRESS
+Score: 0–25 RISK_ON · 26–50 NEUTRAL · 51–75 RISK_OFF · 76–100 STRESS
 
 ---
 
 ## Data Sources
 
-86 FRED series from: Federal Reserve · US Treasury · Bureau of Labor Statistics · Bureau of Economic Analysis · Coinbase (BTC/ETH reference)
+86 FRED series — Federal Reserve, US Treasury, BLS, BEA, Coinbase reference rates.
 
-Full Treasury yield curve (1M–30Y) · SOFR/EFFR/OBFR · CPI/PCE/PPI · VIX · Credit Spreads · 10 FX pairs · Gold/Silver/Oil/Copper · Housing · Consumer Sentiment
+Full Treasury yield curve (1M–30Y) · SOFR/EFFR · CPI/PCE/PPI · VIX · Credit Spreads · 10 FX pairs · Gold/Silver/Oil · Housing · Consumer Sentiment
 
 ---
 
 ## Pricing
 
-| Tier | Price | Calls/day | Regime Engine |
-|------|-------|-----------|---------------|
-| Free | €0 | 100 | ✗ |
-| Developer | €49/mo | 5,000 | ✓ |
-| Professional | €299/mo | 25,000 | ✓ + verified proofs |
-| Enterprise | Custom | Unlimited | ✓ + SLA |
+| Tier | Price | Calls/day |
+|------|-------|-----------|
+| Free | €0 | 100 |
+| Starter | $99/mo or 99 USDC | 5,000 |
+| Pro | $299/mo or 299 USDC | 25,000 |
+| Enterprise | Custom | Unlimited |
+
+Agents can upgrade autonomously via USDC on Polygon. See [Compliance Oracle README](https://github.com/feedoracle/feedoracle-mcp) for payment flow.
 
 ---
 
@@ -130,14 +148,16 @@ Full Treasury yield curve (1M–30Y) · SOFR/EFFR/OBFR · CPI/PCE/PPI · VIX · 
 
 | Server | URL | Purpose |
 |--------|-----|---------|
-| **Compliance Oracle** | `https://feedoracle.io/mcp/` | MiCA/DORA regulatory data + AI Evidence Layer (22 tools) |
-| **Macro Oracle** (this) | `https://feedoracle.io/mcp/macro/` | Fed/ECB economic indicators, 86 FRED series |
-| **Stablecoin Risk** | `https://feedoracle.io/mcp/risk/` | 7-signal stablecoin operational risk (SAFE/CAUTION/AVOID) |
+| **Compliance Oracle** | `https://feedoracle.io/mcp/` | MiCA/DORA + AI Evidence Layer (22 tools) |
+| **Macro Oracle** (this) | `https://feedoracle.io/mcp/macro/` | 86 FRED series, macro regime engine |
+| **Stablecoin Risk** | `https://feedoracle.io/mcp/risk/` | SAFE/CAUTION/AVOID operational risk |
 
 > "May your agent trade this?" → Compliance Oracle  
-> "Should your agent trade right now?" → Macro Oracle (this server)  
+> "Should your agent trade right now?" → **Macro Oracle**  
 > "Is this stablecoin safe for settlement?" → Stablecoin Risk
 
 ---
 
-🌐 [feedoracle.io](https://feedoracle.io) · [API Docs](https://feedoracle.io/docs.html) · [Health](https://feedoracle.io/mcp/macro/health)
+🌐 [feedoracle.io](https://feedoracle.io) · ✅ [Verify](https://feedoracle.io/feedoracle_agent_verify.py) · 🏥 [Health](https://feedoracle.io/api/v1/macro/health)
+
+**License:** Proprietary — © 2026 FeedOracle.
