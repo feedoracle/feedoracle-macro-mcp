@@ -1,0 +1,11 @@
+{
+  "name": "FeedOracle Macro MCP",
+  "description": "Macro economic intelligence MCP. 13 tools powered by 86 FRED series + ECB data. Fed rates, inflation (CPI/PCE), yield curve, labor market, GDP, recession probability. ES256K signed evidence.",
+  "version": "2.5.0",
+  "author": "FeedOracle",
+  "homepage": "https://feedoracle.io",
+  "repository": "https://github.com/feedoracle/feedoracle-macro-mcp",
+  "license": "MIT",
+  "tags": ["macro","economics","fed","inflation","gdp","recession","fred","ecb","mcp"],
+  "mcp": {"transport": "streamable-http", "endpoint": "https://mcp.feedoracle.io/macro/mcp"}
+}
