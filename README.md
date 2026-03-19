@@ -10,7 +10,7 @@
 [![Tools](https://img.shields.io/badge/tools-13-3B82F6?style=flat-square)](https://feedoracle.io/mcp.html)
 [![Free](https://img.shields.io/badge/free-100_calls%2Fday-10B898?style=flat-square)](https://feedoracle.io/pricing.html)
 
-[Website](https://feedoracle.io) Â· [All MCP Tools](https://feedoracle.io/mcp.html) Â· [Docs](https://feedoracle.io/docs.html) Â· [Main Repo](https://github.com/feedoracle/feedoracle-mcp)
+[Website](https://feedoracle.io) · [All MCP Tools](https://feedoracle.io/mcp.html) · [Docs](https://feedoracle.io/docs.html) · [Main Repo](https://github.com/feedoracle/feedoracle-mcp)
 
 </div>
 
@@ -18,7 +18,9 @@
 
 ## What this does
 
-Before your AI agent allocates capital, adjusts leverage, or rebalances â€” it checks the macro environment. Every response is cryptographically signed (ES256K) and independently verifiable.
+Before your AI agent allocates capital, adjusts leverage, or rebalances – it checks the macro environment. Every response is cryptographically signed (ES256K) and independently verifiable.
+
+[![FeedOracle Macro MCP server](https://glama.ai/mcp/servers/feedoracle/feedoracle-macro-mcp/badges/card.svg)](https://glama.ai/mcp/servers/feedoracle/feedoracle-macro-mcp)
 
 ## Quick start
 
@@ -75,6 +77,6 @@ What is the current macro regime? Should my agent be risk-on or risk-off?
 
 **FeedOracle turns compliance documents into compliance evidence.**
 
-[feedoracle.io](https://feedoracle.io) Â· *Evidence by Design.*
+[feedoracle.io](https://feedoracle.io) · *Evidence by Design.*
 
 </div>
